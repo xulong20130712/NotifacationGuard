@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
         String t = String.valueOf(new Date().getTime());
         String signStr = StringUtils.md5(t + signKey);
-        String url = NetUtils.URLSCHEMA_HTTPS + host+ "&sign=" + signStr;
+        String url = NetUtils.URLSCHEMA_HTTPS + host+ "/commit&sign=" + signStr;
         Callback callback = new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -221,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         String json= "{ \"name\":\"runoob\", \"alexa\":10000, \"site\":null }";
-//        url= "https://www.baidu.com";
         NetUtils.getInstance().requestData(url, RequestType.POST, callback, getRequestBody(json));
     }
 

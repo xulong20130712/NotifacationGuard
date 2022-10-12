@@ -71,10 +71,9 @@ public class NetUtils {
     public void requestData(final String requestUrl, String method, Callback callback, RequestBody body) {
 
         try {
+            if (StringUtils.isEmptyString(method)) {
 
-            if(StringUtils.isEmptyString(method)) {
-
-                method= DEFAULT_REQ_METHOD;
+                method = DEFAULT_REQ_METHOD;
             }
             Request request = new Request.Builder()
                     .url(requestUrl)
