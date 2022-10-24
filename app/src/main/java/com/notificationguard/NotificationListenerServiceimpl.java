@@ -12,6 +12,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.notificationguard.utils.RequestTransaform;
+import com.notificationguard.utils.StringUtils;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +23,31 @@ public class NotificationListenerServiceimpl extends NotificationListenerService
 
 
     private static boolean isValid= false;
+
+    private static String WECHATTAG= "com.tencent";
+    private static String ALITAG= "com.eg.android.AlipayGphone";//aa徐龙通过扫码向你付款0.01元
+    private static String ALISPLIT= "通过扫码向你付款";
+    private static String WECHATSPLIT= "通过扫码向你付款";
+    private boolean isAliPay= false;
+
+    private DataBean dataBean= new DataBean();
+
+
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-        // 如果该通知的包名不是微信，那么 pass 掉
-//        if (!"com.tencent.mm".equals(sbn.getPackageName())) {
-//            return;
-//        }
 
+        if(sbn== null) {
+
+            return;
+        }
         Log.e("+-->", "---onNotificationPosted---"+ sbn.getPackageName());
         Notification notification = sbn.getNotification();
+        String packageName= sbn.getPackageName();
+        Log.e("+-->", "---packageName---"+ packageName);
+        if(!StringUtils.isEmptyString(packageName)) {
+
+            isAliPay= packageName.contains(ALITAG);
+        }
         if (notification == null) {
             return;
         }
@@ -41,7 +60,18 @@ public class NotificationListenerServiceimpl extends NotificationListenerService
                 String title = extras.getString(Notification.EXTRA_TITLE, "");
                 // 获取通知内容
                 String content = extras.getString(Notification.EXTRA_TEXT, "");
+                String[] values= null;
+                if(isAliPay) {
+                    values= content.split(ALISPLIT);
+                    values[1]= values[1].replace("元", "");
+                    dataBean.setNickName(values[0]);
+                    dataBean.setPrice(Double.parseDouble(values[1]));
+                    dataBean.setExtra("extra");
+                    RequestTransaform.requestData(dataBean, null);
+                }else {
 
+                }
+                Log.e("+-->", "---values---"+ values);
                 Log.e("+-->", "---intent title---"+ title+ "-content"+ content);
                 if (!TextUtils.isEmpty(content) && content.contains("[微信红包]")) {
                     pendingIntent = notification.contentIntent;

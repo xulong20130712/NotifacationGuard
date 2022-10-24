@@ -20,25 +20,24 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.alibaba.fastjson.JSON;
 import com.notificationguard.utils.NetUtils;
+import com.notificationguard.utils.RSAUtils;
 import com.notificationguard.utils.RequestType;
 import com.notificationguard.utils.SettingUtils;
 import com.notificationguard.utils.StringUtils;
-import com.notificationguard.vmq.VMQUtils;
 import com.notificationguard.vmq.util.Constant;
 import com.notificationguard.zxing.activity.CaptureActivity;
 
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
-import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
@@ -199,9 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestData(final String host, final String signKey, final HashMap<String, String> body) {
 
-        String t = String.valueOf(new Date().getTime());
-        String signStr = StringUtils.md5(t + signKey);
-        String url = NetUtils.URLSCHEMA_HTTPS + host+ "/commit&sign=" + signStr;
+        String url= "https://api.spointyc.com/edge/channel/v1/updateInfo";
         Callback callback = new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -220,8 +217,27 @@ public class MainActivity extends AppCompatActivity {
 //                    isOk = true;
             }
         };
-        String json= "{ \"name\":\"runoob\", \"alexa\":10000, \"site\":null }";
-        NetUtils.getInstance().requestData(url, RequestType.POST, callback, getRequestBody(json));
+        String dataJson= "";
+        String values= "";
+        DataBean dataBean= new DataBean();
+        dataBean.setExtra("this is ex");
+        dataBean.setPrice(100);
+        dataBean.setNickName("this is pro");
+        dataJson= JSON.toJSONString(dataBean);
+        try {
+            values = RSAUtils.encrypt(dataJson, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Pattern pattern = Pattern.compile("\\s*|\\t|\\r|\\n");
+        Matcher matcher= pattern.matcher(values);
+        values= matcher.replaceAll("");
+        Log.e("+-->", "values---"+ values);
+        RequestBean requestBean= new RequestBean();
+        requestBean.setData(values);
+        String requestJson= JSON.toJSONString(requestBean);
+        Log.e("+-->", "---dataJson rsa---"+ requestJson);
+        NetUtils.getInstance().requestData(url, RequestType.POST, callback, getRequestBody(requestJson));
     }
 
     private FormBody getFormBody(HashMap<String, String> body) {

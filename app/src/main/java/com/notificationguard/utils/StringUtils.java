@@ -21,6 +21,19 @@ public class StringUtils {
         return flag;
     }
 
+    public static boolean isEqualsString(final String str1, final String str2) {
+
+        if(str1== str2) {
+
+            return true;
+        }
+        if(str1!= null&& str1.trim().length()> 0) {
+
+            return str1.equals(str2);
+        }
+        return false;
+    }
+
     public static String byte2String(byte[] bytes) {
 
         if(bytes== null|| bytes.length<= 0) {
