@@ -30,9 +30,9 @@ public class StartReceive extends BroadcastReceiver {
                 isBootCompleted = true;
                 VMQUtils.sendBatteryNotify(context);
             }
-            NeNotificationService2.enterForeground(context,
-                    context.getString(R.string.app_name),
-                    context.getString(R.string.app_is_start), "");
+//            NeNotificationService2.enterForeground(context,
+//                    context.getString(R.string.app_name),
+//                    context.getString(R.string.app_is_start), "");
         }
         if (START_SETTING_ACTIVITY_ACTION.equals(intent.getAction())) {
             Log.d("StartReceive", "start");

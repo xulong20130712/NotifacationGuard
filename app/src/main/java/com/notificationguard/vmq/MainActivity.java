@@ -71,9 +71,9 @@ public class MainActivity extends Activity {
             VMQUtils.gotoBatterySetting(this);
         }
         //重启监听服务
-        if (!NeNotificationService2.isRunning) {
-            toggleNotificationListenerService(this);
-        }
+//        if (!NeNotificationService2.isRunning) {
+//            toggleNotificationListenerService(this);
+//        }
         //读入保存的配置数据并显示
         SharedPreferences read = getSharedPreferences("vone", MODE_PRIVATE);
         host = read.getString("host", "");

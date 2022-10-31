@@ -48,6 +48,7 @@ public class NotificationListenerServiceimpl extends NotificationListenerService
 
             isAliPay= packageName.contains(ALITAG);
         }
+        Log.e("+-->", "---isAliPay---"+ isAliPay);
         if (notification == null) {
             return;
         }
@@ -60,19 +61,23 @@ public class NotificationListenerServiceimpl extends NotificationListenerService
                 String title = extras.getString(Notification.EXTRA_TITLE, "");
                 // 获取通知内容
                 String content = extras.getString(Notification.EXTRA_TEXT, "");
+                Log.e("+-->", "---intent title---"+ title+ "-content"+ content);
                 String[] values= null;
-                if(isAliPay) {
+                if(isAliPay&& !StringUtils.isEmptyString(content)) {
                     values= content.split(ALISPLIT);
-                    values[1]= values[1].replace("元", "");
-                    dataBean.setNickName(values[0]);
-                    dataBean.setPrice(Double.parseDouble(values[1]));
-                    dataBean.setExtra("extra");
-                    RequestTransaform.requestData(dataBean, null);
+                    if(values!= null&& values.length>1) {
+
+                        values[1]= values[1].replace("元", "");
+                        dataBean.setNickName(values[0]);
+                        dataBean.setPrice(Double.parseDouble(values[1]));
+                        dataBean.setExtra("extra");
+                        Log.e("+-->", "---dataBean---"+ dataBean);
+                        RequestTransaform.requestData(dataBean, null);
+                    }
                 }else {
 
                 }
                 Log.e("+-->", "---values---"+ values);
-                Log.e("+-->", "---intent title---"+ title+ "-content"+ content);
                 if (!TextUtils.isEmpty(content) && content.contains("[微信红包]")) {
                     pendingIntent = notification.contentIntent;
                 }

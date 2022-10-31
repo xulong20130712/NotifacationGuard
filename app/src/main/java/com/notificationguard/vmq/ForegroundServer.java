@@ -109,7 +109,7 @@ public class ForegroundServer extends Service {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    NeNotificationService2.exitForeground(App.getContext());
+//                    NeNotificationService2.exitForeground(App.getContext());
                 }
             });
             return;
@@ -140,7 +140,7 @@ public class ForegroundServer extends Service {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        NeNotificationService2.exitForeground(App.getContext());
+//                                        NeNotificationService2.exitForeground(App.getContext());
                                     }
                                 });
                             }
